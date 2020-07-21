@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - uses: actions/checkout@v2
+
     - name: Run action
-      uses: .
+      uses: ./
       with: 
         ssh-private-key: ${{ secrets.SSH_KEY  }}
         repository: leukocyte-lab/action-test

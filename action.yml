@@ -1,5 +1,5 @@
 name: 'Build n Push'
-description: 'GitHub Action that build & push Leukocyte-Lab containter's Dockerfile'
+description: "GitHub Action that build & push Leukocyte-Lab's Dockerfile"
 author: 'jason8399'
 inputs:
   ssh-private-key:

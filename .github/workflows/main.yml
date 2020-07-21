@@ -1,0 +1,24 @@
+name: Test action
+
+on:
+  push:
+
+jobs:
+
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Run action
+      uses: .
+      with: 
+        ssh-private-key: ${{ secrets.SSH_KEY  }}
+        repository: leukocyte-lab/action-test
+        username: ${{ secrets.GITLAB_USERNAME }}
+        password: ${{ secrets.GITLAB_DEPLOY_KEY }}
+        registry: registry.gitlab.com
+        tags: v1.0.0
+        path: test
+
+

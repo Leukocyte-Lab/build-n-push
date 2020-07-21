@@ -1,0 +1,42 @@
+name: 'Build n Push'
+description: 'GitHub Action that build & push Leukocyte-Lab containter's Dockerfile'
+author: 'jason8399'
+inputs:
+  ssh-private-key:
+    description: 'Private SSH key to register in the SSH Agent'
+    required: true
+  username:
+    description: Username used to log in to a Docker registry. If not set then no login will occur
+    required: true
+  password:
+    description: Password or personal access token used to log in to a Docker registry. If not set then no login will occur
+    required: true
+  registry:
+    description: Server address of Docker registry. If not set then will default to Docker Hub
+    required: false
+  repository:
+    description: Docker repository to tag the image with
+    required: true
+  tags:
+    description: Comma-delimited list of tags. These will be added to the registry/repository to form the image's tags
+    required: false
+  path:
+    description: Path to the build context
+    required: false
+    default: "."
+  dockerfile:
+    description: Path to the Dockerfile (Default is '{path}/Dockerfile')
+    required: false
+  build_args:
+    description: Comma-delimited list of build-time variables
+    required: false
+  push:
+    description: Whether to push the image
+    required: false
+    default: true
+
+runs:
+  using: 'docker'
+branding:
+  color: 'yellow'
+  icon: 'package'

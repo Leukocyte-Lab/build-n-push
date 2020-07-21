@@ -34,9 +34,9 @@ inputs:
     description: Whether to push the image
     required: false
     default: true
-
 runs:
   using: 'docker'
+  image: 'Dockerfile'
 branding:
   color: 'yellow'
   icon: 'package'

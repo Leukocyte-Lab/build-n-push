@@ -15,12 +15,15 @@ jobs:
     - name: Run action
       uses: ./
       with: 
-        ssh-private-key: ${{ secrets.SSH_KEY  }}
-        repository: leukocyte-lab/action-test
+        ssh_private_key: ${{ secrets.SSH_KEY  }}
+        repository: leukocyte-lab/argushack2/action-test
         username: ${{ secrets.GITLAB_USERNAME }}
         password: ${{ secrets.GITLAB_DEPLOY_KEY }}
         registry: registry.gitlab.com
-        tags: v1.0.0
+        tags: v1.0.0,v1
         path: test
+        ssh: true
+        push: true
+
 
 

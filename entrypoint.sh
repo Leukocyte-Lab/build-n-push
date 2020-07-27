@@ -80,7 +80,7 @@ opt_builder() {
 	fi
 }
 
-if [ -n $INPUT_SSH_PRIVATE_KEY ]
+if [ -n "$INPUT_SSH_PRIVATE_KEY" ]
 then
 	add_ssh_key
 	start_up_ssh_agent

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit immediately if a pipeline returns a non-zero status.
+set -e
+
 # Add Prviate Key
 add_ssh_key() {
 	mkdir -p ~/.ssh/

@@ -1,29 +1,69 @@
-name: Test action
-
-on:
+---
+name: Build action safely
+'on':
   push:
-
+    branches:
+    - master
+  pull_request: {}
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish a unique fixture tag only after private package/access
+          readiness
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
 jobs:
-
   build:
-    name: Test
+    name: Build and safety tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-
-    - uses: actions/checkout@v2
-
-    - name: Run action
-      uses: ./
-      with: 
-        ssh_private_key: ${{ secrets.SSH_KEY  }}
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - name: Offline safety tests
+      run: python3 -m unittest discover -s .github/tests -v
+    - name: Build fixture without registry credentials or publication
+      uses: "./"
+      with:
         repository: leukocyte-lab/argushack2/action-test
-        username: ${{ secrets.GITLAB_USERNAME }}
-        password: ${{ secrets.GITLAB_DEPLOY_KEY }}
-        registry: registry.gitlab.com
-        tags: v1.0.0,v1
+        registry: ghcr.io
+        tags: local-fixture
         path: test
-        ssh: true
-        push: true
-
-
-
+        push: 'false'
+  publish:
+    name: Explicit protected private GHCR fixture publication
+    runs-on: ubuntu-latest
+    needs: build
+    if: "${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.ref
+      == 'refs/heads/master' && github.ref_protected && vars.GHCR_PUBLISH_ENABLED
+      == 'true' }}"
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        persist-credentials: false
+    - name: Verify existing private GHCR package and protected publication
+      id: publish
+      env:
+        GH_TOKEN: "${{ github.token }}"
+        GHCR_PACKAGE: argushack2/action-test
+        GHCR_PUBLISH_ENABLED: "${{ vars.GHCR_PUBLISH_ENABLED }}"
+      run: bash .github/scripts/verify-ghcr-publish.sh
+    - uses: "./"
+      env:
+        GHCR_PUBLISH_ENABLED: "${{ vars.GHCR_PUBLISH_ENABLED }}"
+      with:
+        repository: leukocyte-lab/argushack2/action-test
+        registry: ghcr.io
+        tags: "${{ steps.publish.outputs.image_tag }}"
+        path: test
+        push: 'true'
+        username: "${{ github.actor }}"
+        password: "${{ github.token }}"

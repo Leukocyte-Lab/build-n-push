@@ -7,13 +7,14 @@ inputs:
     required: false
   username:
     description: Username used to log in to a Docker registry.
-    required: true
+    required: false
   password:
     description: Password or personal access token used to log in to a Docker registry.
-    required: true
-  registry:
-    description: Server address of Docker registry. If not set then will default to Docker Hub
     required: false
+  registry:
+    description: Docker registry host. Defaults to GHCR; legacy hosts require an explicit value.
+    required: false
+    default: ghcr.io
   repository:
     description: Docker repository to tag the image with
     required: true
@@ -32,9 +33,9 @@ inputs:
     required: false
     default: false
   push:
-    description: Whether to push the image
+    description: Explicitly publish only from a protected push, release or manual workflow event.
     required: false
-    default: true
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
